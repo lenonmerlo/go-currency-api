@@ -2,13 +2,45 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lenonmerlo/go-currency-api/internal/services"
 )
 
 func GetRates(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H {
-		"error": "not_implemented",
-		"message": "Rates endpoint will be implemented in the next step.",
+	base := strings.ToUpper(strings.TrimSpace(c.DefaultQuery("base", "BRL")))
+	rawSymbols := c.DefaultQuery("symbols", "USD,EUR")
+
+	var symbols []string
+	for _, s := range strings.Split(rawSymbols, ",") {
+		s = strings.ToUpper(strings.TrimSpace(s))
+		if s != "" {
+			symbols = append(symbols, s)
+		}
+	}
+
+	if base == "" || len(symbols) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "bad_request",
+			"message": "use ?base=BRL&symbols=USD,EUR (mínimo 1 símbolo)",
+		})
+		return
+	}
+
+	rates, provider, err := services.FetchRates(base, symbols)
+	if err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{
+			"error":   "upstream_error",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"base":     base,
+		"rates":    rates,
+		"provider": provider,
 	})
+
 }
