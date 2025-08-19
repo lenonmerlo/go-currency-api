@@ -1,0 +1,47 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: API em Go para cotações de moedas (com fallback de provider).
+  title: Go Currency API
+  version: "1.0"
+paths:
+  /v1/rates:
+    get:
+      description: Retorna cotações para os símbolos informados a partir da moeda
+        base.
+      parameters:
+      - default: BRL
+        description: Moeda base
+        in: query
+        name: base
+        required: true
+        type: string
+      - default: USD,EUR
+        description: Moedas alvo separadas por vírgula
+        in: query
+        name: symbols
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "502":
+          description: Bad Gateway
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Cotação de moedas
+      tags:
+      - rates
+swagger: "2.0"

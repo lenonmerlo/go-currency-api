@@ -8,6 +8,17 @@ import (
 	"github.com/lenonmerlo/go-currency-api/internal/services"
 )
 
+// GetRates godoc
+// @Summary Cotação de moedas
+// @Description Retorna cotações para os símbolos informados a partir da moeda base.
+// @Tags rates
+// @Param base query string true "Moeda base" default(BRL)
+// @Param symbols query string true "Moedas alvo separadas por vírgula" default(USD,EUR)
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Failure 502 {object} map[string]interface{}
+// @Router /v1/rates [get]
 func GetRates(c *gin.Context) {
 	base := strings.ToUpper(strings.TrimSpace(c.DefaultQuery("base", "BRL")))
 	rawSymbols := c.DefaultQuery("symbols", "USD,EUR")
