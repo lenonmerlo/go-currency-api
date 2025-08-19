@@ -1,0 +1,9 @@
+.git
+.gitignore
+bin
+vendor
+.vscode
+.idea
+# cache/temporary files
+*.log
+.tmp
